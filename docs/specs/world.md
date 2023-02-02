@@ -1,38 +1,44 @@
 # World building
 
-- da wir ein "unendliche" map machen, kommen um prozedurale generierung nicht herum
-- ein kompromiss wäre es fix "Abschnitte" zu haben, die 
-  - eine fixe Länge (x) und fixe Höhe (screen.y = 160px) besitzen
-  - dynmisch mit obstacles, enemies, traps etc. befüllt werden
-  - dynamisch mit "Farben" versehen werden
+Wir laden world files und parsen diese in unsere world.
 
-- mit Beginn eines neuen Abschnitts vergrößert sich der Schwierigkeitsgrad, der entweder
-  - höhere Geschwindigkeit
-  - schwerere obstacles
-  - schwerere enemies
-  - schwerere traps bedeutet
+- world files sind Text Dateien mit `.world` als Endung
+- UTF-8 encoding
+- es werden nur ascii characters verwendet
+- keine Leerzeichen da im Editor nicht zu erkennen...
+- line endings sind \n
+- path ist unter `src/main/assets/world
+
+
+## Legende
+
+```
+▒  Air / Space
+=  Ground
+x  Enemy
+^  Trap
+$  Coin
+█  Obstacle
+@  Powerup
+```
 
 ## Beispiel
 
 ```
-|             |             |             |      ---    |        []   |     []      |             |
-|   A         |  B    ------|  C          |   D  ---    |---E---------|  F          |   G         | --->
-|             |   ------    |---       [] |      ---    |             |             |             |
-|----^^^------|---^^^^^^^^^^|^^^^^--------|------^^^^---|-------------|-------------|-------------|-------
-===========================================================================================================
-
-
--- Ground
-[] Enemy
-^^ Trap
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒$$$█$$$▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒=======▒▒▒▒▒▒▒▒$$$$$$▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒^▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒======▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒$$$$$$$$$$$▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒x▒▒▒@▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒█▒▒▒▒▒▒x▒█▒▒▒▒▒█▒▒▒▒
+===================▒▒====▒▒▒====▒▒==============================================
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
 ```
-
-## Pseudocode für world building algorithmus (noch unstrukturiert)
-
-- lade ersten Abschnitt
-- wenn user x% des Abschnitts absolviert hat, lade nächsten Abschnitt
-- für zu ladenden Abschnitt,
-   - errechne aktuellen score (aktuelle Position + gesammelte powerups usw.)
-   - platziere Farbpalette, basierend auf score
-   - platziere enemies, basierend auf score
-   - platziere obstacles, basierend auf score
